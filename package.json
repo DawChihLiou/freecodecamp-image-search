@@ -28,6 +28,7 @@
   "homepage": "https://github.com/DawChihLiou/freecodecamp-image-search#readme",
   "dependencies": {
     "express": "^4.15.2",
+    "mongodb": "^2.2.25",
     "node-bing-api": "^3.2.1"
   },
   "devDependencies": {

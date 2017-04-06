@@ -1,16 +1,19 @@
 'use strict';
 
-const apikey = process.env.BING_ACCOUNT_KEY;
 const port = process.env.PORT;
+const apikey = process.env.BING_ACCOUNT_KEY;
+const mlabUrl = process.env.MLAB_URL;
 
 const express = require('express');
 const url = require('url');
 const Bing = require('node-bing-api')({accKey: apikey});
+const mongodb = require('mongodb');
 
 const app = express();
+const Mongo = mongodb.MongoClient;
 
 /**
- *  Image Search with Bing
+ *  Image Search with Bing and save search record in MongoDB
  */
 app.get('/api/imagesearch/:search', (req, res) => {
     const searchParams = req.params.search;
@@ -33,12 +36,24 @@ app.get('/api/imagesearch/:search', (req, res) => {
             data.push(img);
         }
         
-        res.send(data);
+        Mongo.connect(mlabUrl, (err, db) => {
+            if (err) console.error(`Unable to connect to mongodb ${err}`);
+            
+            db.collection('searches').save({
+                term: searchParams,
+                when: (new Date()).toJSON()
+            }, (err) => {
+                if (err) console.error(`Unable to save search record to mongodb ${err}`);
+                
+                res.send(data);
+                db.close();
+            });
+        });
     });
 });
 
 /**
- * Show latest searches
+ * Show latest searches from MongoDB
  */
 app.get('/api/latest/imagesearch', (req, res) => {
     res.send('hi');
