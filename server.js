@@ -12,8 +12,29 @@ const app = express();
 /**
  *  Image Search with Bing
  */
-app.get('/api/imagesearch/:query', (req, res) => {
-    res.send('hi');
+app.get('/api/imagesearch/:search', (req, res) => {
+    const searchParams = req.params.search;
+    const searchOffset = req.query.offset;
+    const data = [];
+    
+    Bing.images(searchParams, {
+        count: 10,
+        offset: searchOffset || 0
+    }, (err, resp, body) => {
+        if (err) console.error(`Unable to fetch image data ${err}`);
+        
+        for (const v of body.value) {
+            const img = {
+                url: v.contentUrl,
+                snippet: v.name,
+                thumbnail: v.thumbnailUrl,
+                context: v.contentUrl
+            };
+            data.push(img);
+        }
+        
+        res.send(data);
+    });
 });
 
 /**
