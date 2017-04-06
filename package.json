@@ -1,0 +1,36 @@
+{
+  "name": "fcc-image-search",
+  "version": "1.0.0",
+  "description": "Free Code Camp Image Search Abstraction Layer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DawChihLiou/freecodecamp-image-search.git"
+  },
+  "keywords": [
+    "node",
+    "api",
+    "json",
+    "express",
+    "bing",
+    "image",
+    "search"
+  ],
+  "author": "Daw-Chih Liou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DawChihLiou/freecodecamp-image-search/issues"
+  },
+  "homepage": "https://github.com/DawChihLiou/freecodecamp-image-search#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "node-bing-api": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
