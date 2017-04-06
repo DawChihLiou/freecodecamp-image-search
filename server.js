@@ -20,6 +20,7 @@ app.get('/api/imagesearch/:search', (req, res) => {
     const searchOffset = req.query.offset;
     const data = [];
     
+    // fetch 10 search results and allow pagination
     Bing.images(searchParams, {
         count: 10,
         offset: searchOffset || 0
@@ -36,6 +37,7 @@ app.get('/api/imagesearch/:search', (req, res) => {
             data.push(img);
         }
         
+        // save search record in database
         Mongo.connect(mlabUrl, (err, db) => {
             if (err) console.error(`Unable to connect to mongodb ${err}`);
             
@@ -56,7 +58,20 @@ app.get('/api/imagesearch/:search', (req, res) => {
  * Show latest searches from MongoDB
  */
 app.get('/api/latest/imagesearch', (req, res) => {
-    res.send('hi');
+    Mongo.connect(mlabUrl, (err, db) => {
+       if (err) console.error(`Unable to connect to mongodb ${err}`);
+       
+       // get the latest 10 search records in {term, where} format
+       db.collection('searches').find({}, {_id: false}, {
+           limit: 10,
+           sort: [['when', 'desc']]
+       }).toArray((err, docs) => {
+           if (err) console.error(`Unable to retrieve search records ${err}`);
+           
+           res.send(docs);
+           db.close();
+       })
+    });
 });
 
 app.listen(port, () => {
